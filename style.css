@@ -1,4 +1,4 @@
-/* Reset podstawowych styli komputerowych */
+/* RESET I STYLE PODSTAWOWE */
 * {
     margin: 0;
     padding: 0;
@@ -6,169 +6,218 @@
 }
 
 body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #121212; /* Ciemne, industrialne tło */
-    color: #e0e0e0;
-    line-height: 1.6;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    line-height: 1.4;
 }
 
-/* Styl nagłówka z dużym tłem (Hero) */
-.hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1200&q=80');
+/* LINKI HOVER */
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #8aa43a !important;
+}
+
+/* GŁÓWNY BANER HERO */
+.wix-hero {
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80'); 
     background-size: cover;
-    background-position: center;
-    height: 60vh;
+    background-position: center 30%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 20px;
+}
+
+/* Menu Górne */
+.wix-nav {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 80px;
+}
+
+.wix-nav a {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+/* Logo BYTOM */
+.logo-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    border-bottom: 4px solid #ff7700; /* Pomarańczowy, "hutniczy" akcent */
+    height: 150px;
 }
 
-.hero-content h1 {
+.bytom-logo {
     font-family: 'Oswald', sans-serif;
-    font-size: 4rem;
-    letter-spacing: 4px;
-    color: #ffffff;
-    margin-bottom: 10px;
+    font-size: 5.5rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    display: flex;
 }
 
-.hero-content .tagline {
-    font-size: 1.2rem;
-    color: #cccccc;
-    margin-bottom: 25px;
-}
+.bytom-logo .letter-b { color: #f9b612; }
+.bytom-logo .letter-y { color: #9c27b0; }
+.bytom-logo .letter-t { color: #00a2e8; }
+.bytom-logo .letter-o { color: #8cc63f; }
+.bytom-logo .letter-m { color: #ea212d; }
 
-/* Przycisk akcji */
-.btn {
-    display: inline-block;
-    padding: 12px 30px;
-    background-color: #ff7700;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-    text-transform: uppercase;
-    border-radius: 4px;
-    transition: background 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #e06600;
-}
-
-/* Wspólne style dla sekcji */
-section {
-    padding: 60px 20px;
-    max-width: 1100px;
+/* KAFELKI HISTORII */
+.history-section {
+    background-color: #ffffff;
+    padding: 40px 20px 20px 20px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
-section h2 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 2.2rem;
-    color: #ffffff;
-    margin-bottom: 20px;
-    position: relative;
-    padding-bottom: 10px;
-}
-
-section h2::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 60px;
-    height: 3px;
-    background-color: #ff7700;
-}
-
-.about p {
-    font-size: 1.1rem;
-    color: #b3b3b3;
-}
-
-/* Układ kafelków (Grid) */
-.grid {
+.grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
 }
 
-.card {
-    background-color: #1e1e1e;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #2a2a2a;
-    transition: transform 0.3s ease;
+@media (max-width: 1024px) {
+    .grid-container { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+    .grid-container { grid-template-columns: repeat(1, 1fr); }
 }
 
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.card-img {
-    height: 200px;
-    background-color: #333;
-}
-
-/* Symulacja obrazków industrialnych (kolory węgla i rdzy) */
-.placeholder-krystyna { background: #262626 linear-gradient(45deg, #2c2c2c, #1a1a1a); }
-.placeholder-elektrocieplownia { background: #3a2212 linear-gradient(45deg, #3d281d, #24140a); }
-.placeholder-muzeum { background: #1c2833 linear-gradient(45deg, #212f3d, #17202a); }
-
-.card-body {
-    padding: 20px;
-}
-
-.card-body h3 {
-    color: #ffffff;
-    margin-bottom: 10px;
-    font-size: 1.3rem;
-}
-
-.card-body p {
-    font-size: 0.95rem;
-    color: #aaaaaa;
-}
-
-/* Sekcja Mapy */
-.map-container {
-    margin-top: 30px;
-    width: 100%;
-}
-
-.map-placeholder {
-    width: 100%;
-    height: 450px;
-    background-color: #1a1a1a;
-    border: 2px dashed #333;
+.history-card {
+    background: #ffffff;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+}
+
+.card-img-wrapper {
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-title {
+    margin-top: 15px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #111111;
+    line-height: 1.4;
+    padding-right: 10px;
+}
+
+.blog-link-wrapper {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.go-to-blog {
+    font-size: 0.85rem;
+    color: #666666;
+    text-decoration: underline;
+}
+
+/* SEKCJA MIEJSCA WARTE ODWIEDZENIA */
+.places-section {
+    background-color: #000000;
+    width: 100%;
+}
+
+.places-header {
+    background-color: #000000;
+    text-align: center;
+    padding: 25px 0;
+}
+
+.places-header h2 {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+.places-gallery {
+    display: flex;
+    overflow-x: hidden;
+    width: 100%;
+    background-color: #000000;
+}
+
+.gallery-item {
+    flex: 0 0 12.5%;
+    height: 280px;
+}
+
+@media (max-width: 900px) {
+    .gallery-item { flex: 0 0 25%; }
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* SEKCJA O NAS */
+.about-wix-section {
+    background-color: #ffffff;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.about-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-container h2 {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+}
+
+.about-container p {
+    font-size: 1rem;
+    color: #333333;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.wix-plus-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #8aa43a;
+    color: #ffffff;
+    width: 40px;
+    height: 40px;
     border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-}
-
-/* Stopka */
-footer {
-    background-color: #0b0b0b;
-    text-align: center;
-    padding: 30px 20px;
-    color: #666;
-    font-size: 0.9rem;
-    border-top: 1px solid #1a1a1a;
-    margin-top: 60px;
-}
-
-/* Responsywność dla telefonów */
-@media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-    section {
-        padding: 40px 15px;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
 }
