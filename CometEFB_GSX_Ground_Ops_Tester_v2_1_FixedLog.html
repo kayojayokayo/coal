@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CometEFB — GSX Ground Ops Tester</title>
+<style>
+:root{--bg:#090a0d;--card:#111318;--card2:#171a20;--line:#272b33;--text:#f5f6f7;--muted:#8f96a3;--accent:#fbc02d;--green:#43d17d;--orange:#ff9f43;--red:#ff5d68;--blue:#4da3ff;--yellow:#ffd54a}
+*{box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden}body{margin:0;background:radial-gradient(circle at 20% 0,#19160a 0,transparent 28%),var(--bg);color:var(--text);font-family:Montserrat,Inter,Arial,sans-serif;min-height:100vh}
+.shell{max-width:1120px;margin:auto;padding:34px 22px 60px}
+.top{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:24px}
+.brand small{color:var(--accent);font-weight:800;letter-spacing:.16em}.brand h1{font-size:31px;margin:6px 0 4px}.brand p{margin:0;color:var(--muted)}
+.status{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);padding:12px 16px;border-radius:14px;font-weight:800;font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 12px currentColor}.dot.ok{background:var(--green)}.dot.wait{background:var(--yellow)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:18px}.grid>*{min-width:0}.card{background:rgba(17,19,24,.94);border:1px solid var(--line);border-radius:20px;padding:20px}
+.card h2{font-size:15px;margin:0 0 16px}.label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.inputrow{display:flex;gap:8px;margin-top:7px}.inputrow input{min-width:0;flex:1;background:#090b0f;border:1px solid var(--line);color:white;border-radius:11px;padding:11px 12px;font:inherit}
+button{border:0;border-radius:11px;padding:11px 15px;font-weight:900;cursor:pointer;background:var(--accent);color:#16130a}button.secondary{background:#22262e;color:white;border:1px solid #333944}button:disabled{opacity:.42;cursor:not-allowed}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.metric{background:#0c0e12;border:1px solid #20242b;border-radius:12px;padding:12px}.metric b{display:block;margin-top:5px;font-size:13px}
+.log{width:100%;max-width:100%;min-width:0;height:230px;overflow:auto;overflow-x:hidden;background:#08090c;border:1px solid #1f2229;border-radius:12px;padding:12px;font-family:Consolas,monospace;font-size:11px;line-height:1.55;color:#aeb5c0;margin-top:16px}.log>div{display:block;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}.log .in{color:#78b7ff}.log .out{color:#ffd35a}.log .err{color:#ff777f}
+.services-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:13px}.services-head p{margin:4px 0 0;color:var(--muted);font-size:12px}.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.service{background:#0c0e12;border:1px solid #22262e;border-radius:15px;padding:14px}.service-top{display:flex;justify-content:space-between;gap:12px}.service-name{font-weight:900;font-size:14px}.pill{font-size:9px;text-transform:uppercase;font-weight:900;letter-spacing:.08em;padding:5px 8px;border-radius:20px;background:#242832;color:#aeb4bf}.pill.available{background:#10273d;color:#72b9ff}.pill.requested,.pill.performing,.pill.completing{background:#382715;color:#ffb45d}.pill.completed{background:#123222;color:#67df9a}.pill.waiting{background:#393114;color:#ffe071}
+.progressText{min-height:17px;color:var(--muted);font-size:11px;margin:9px 0}.bar{height:5px;background:#20242b;border-radius:9px;overflow:hidden;margin-bottom:11px}.bar span{display:block;height:100%;background:var(--accent);width:0;transition:.25s}
+.service button{width:100%;padding:9px}.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:70px 20px;border:1px dashed #292d35;border-radius:15px}
+.foot{margin-top:16px;color:#676e7b;font-size:10px;text-align:center}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.services{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="shell">
+ <div class="top">
+  <div class="brand"><small>COMETJET LABS</small><h1>GSX Ground Ops Tester</h1><p>Direct Couatl Remote API connection — experimental build.</p></div>
+  <div class="status"><span class="dot" id="dot"></span><span id="statusText">DISCONNECTED</span></div>
+ </div>
+ <div class="grid">
+  <div>
+   <div class="card">
+    <h2>Connection</h2>
+    <div class="label">WebSocket address</div>
+    <div class="inputrow"><input id="url" value="ws://127.0.0.1:8744"><button id="connectBtn">CONNECT</button></div>
+    <div class="info">
+     <div class="metric"><span class="label">GSX engine</span><b id="engine">—</b></div>
+     <div class="metric"><span class="label">Simulator</span><b id="sim">—</b></div>
+     <div class="metric"><span class="label">Protocol</span><b id="protocol">—</b></div>
+     <div class="metric"><span class="label">Services</span><b id="serviceCount">0</b></div>
+    </div>
+    <div class="log" id="log"></div>
+   </div>
+  </div>
+  <div class="card">
+   <div class="services-head"><div><h2 style="margin:0">Ground Services</h2><p>Services are generated from the live GSX state.</p></div><button class="secondary" id="reconnectBtn">RECONNECT</button></div>
+   <div class="services" id="services"><div class="empty">Connect to GSX to load live ground services.</div></div>
+  </div>
+ </div>
+ <div class="foot">CometEFB experimental GSX integration tester • No changes are made to the main EFB</div>
+</div>
+<script>
+let ws=null, state={}, connected=false, hello=null, seq=0;
+const $=id=>document.getElementById(id);
+const stateNames={1:"available",2:"unavailable",3:"bypassed",4:"requested",5:"performing",6:"completed",7:"completing"};
+
+function log(text,kind=""){
+ const d=document.createElement("div"); d.className=kind;
+ d.textContent=`[${new Date().toLocaleTimeString()}] ${text}`;
+ $("log").appendChild(d); $("log").scrollTop=$("log").scrollHeight;
+}
+function setStatus(text,mode=""){
+ $("statusText").textContent=text; $("dot").className="dot "+mode;
+}
+function send(obj){
+ if(!ws || ws.readyState!==WebSocket.OPEN){log("Cannot send — WebSocket is not open.","err");return false}
+ const raw=JSON.stringify(obj); ws.send(raw); log("→ "+raw,"out"); return true;
+}
+function connect(){
+ if(ws){try{ws.close()}catch(e){}}
+ state={}; hello=null; render();
+ const url=$("url").value.trim();
+ setStatus("CONNECTING","wait"); log("Connecting to "+url+"...");
+ try{ws=new WebSocket(url)}catch(e){setStatus("CONNECTION ERROR");log(e.message,"err");return}
+ ws.onopen=()=>{connected=true;setStatus("SOCKET CONNECTED","wait");log("WebSocket opened.");send({type:"subscribe",channels:["state","prompts","toasts"]})};
+ ws.onmessage=e=>{
+  let msg; try{msg=JSON.parse(e.data)}catch(err){log("Invalid JSON received.","err");return}
+  log("← "+JSON.stringify(msg),"in");
+  if(msg.type==="hello"){
+   hello=msg; $("engine").textContent=msg.gsxRunning?"GSX running":"GSX offline";
+   $("sim").textContent=msg.sim||"—"; $("protocol").textContent=msg.protocol??msg.v??"—";
+   setStatus(msg.gsxRunning?"GSX CONNECTED":"GSX OFFLINE",msg.gsxRunning?"ok":"wait");
+  } else if(msg.type==="snapshot"){
+   state={...msg}; render(); setStatus(msg.gsxRunning===false?"GSX OFFLINE":"GSX CONNECTED",msg.gsxRunning===false?"wait":"ok");
+  } else if(msg.type==="patch"){
+   const key=String(msg.path||"").replace(/^\//,"").split("/")[0];
+   if(key) state[key]=msg.value;
+   render();
+  } else if(msg.type==="event"){
+   if(msg.topic==="engine"){
+    if(hello) hello.gsxRunning=msg.gsxRunning;
+    $("engine").textContent=msg.gsxRunning?"GSX running":"GSX offline";
+    setStatus(msg.gsxRunning?"GSX CONNECTED":"GSX OFFLINE",msg.gsxRunning?"ok":"wait");
+   }
+  } else if(msg.type==="result" && msg.ok===false){
+   log(`Command failed: ${msg.error?.code||"unknown_error"}${msg.error?.message?" — "+msg.error.message:""}`,"err");
+  }
+ };
+ ws.onerror=()=>{log("WebSocket error. Check GSX Remote server and port.","err")};
+ ws.onclose=()=>{connected=false;setStatus("DISCONNECTED");log("WebSocket closed.");};
+}
+function serviceState(s){
+ if(s.waiting) return "waiting";
+ if(typeof s.state==="string") return s.state.toLowerCase();
+ return stateNames[s.stateRaw] || stateNames[s.state] || "unknown";
+}
+function progressValue(s){
+ for(const k of ["progress","progressPct","progressPercent"]){
+  if(typeof s[k]==="number") return Math.max(0,Math.min(100,s[k]));
+ }
+ const txt=String(s.progressText||"");
+ const m=txt.match(/(\d+)\s*\/\s*(\d+)/);
+ return m&&+m[2]?Math.min(100,(+m[1]/+m[2])*100):0;
+}
+function triggerService(id){
+ send({type:"command",id:"c-"+(++seq),verb:"service.trigger",args:{service:id}});
+}
+function render(){
+ const list=Array.isArray(state.services)?state.services:[];
+ $("serviceCount").textContent=list.length;
+ if(hello){$("engine").textContent=hello.gsxRunning?"GSX running":"GSX offline";$("sim").textContent=hello.sim||"—";$("protocol").textContent=hello.protocol??hello.v??"—"}
+ const root=$("services"); root.innerHTML="";
+ if(!list.length){root.innerHTML='<div class="empty">No services received yet.<br>Connect to GSX and wait for the startup snapshot.</div>';return}
+ list.forEach(s=>{
+  const st=serviceState(s), p=progressValue(s);
+  const requestable=st==="available";
+  const div=document.createElement("div"); div.className="service";
+  const name=s.displayName||s.name||s.id||"Service";
+  const progress=s.progressText||s.statusText||"";
+  div.innerHTML=`<div class="service-top"><div class="service-name"></div><span class="pill ${st}">${st}</span></div>
+    <div class="progressText"></div><div class="bar"><span style="width:${p}%"></span></div>
+    <button ${requestable?"":"disabled"}>${requestable?"REQUEST":"NOT REQUESTABLE"}</button>`;
+  div.querySelector(".service-name").textContent=name;
+  div.querySelector(".progressText").textContent=progress;
+  div.querySelector("button").onclick=()=>triggerService(s.id);
+  root.appendChild(div);
+ });
+}
+$("connectBtn").onclick=connect;
+$("reconnectBtn").onclick=connect;
+$("url").addEventListener("keydown",e=>{if(e.key==="Enter")connect()});
+log("Tester ready. Start GSX/Couatl, then press CONNECT.");
+</script>
+</body>
+</html>
